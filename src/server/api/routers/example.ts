@@ -7,7 +7,7 @@ export const exampleRouter = createTRPCRouter({
     .input(z.object({ text: z.string() }))
     .query(({ input }) => {
       return {
-        greeting: `Hello ${input.text}`,
+        greeting: `Hello ${JSON.stringify(input)}`,
       };
     }),
 
@@ -19,3 +19,4 @@ export const exampleRouter = createTRPCRouter({
     return "you can now see this secret message!";
   }),
 });
+
