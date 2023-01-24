@@ -71,6 +71,7 @@ model Generation {
     imgurl    String   @unique
     prompt    String
     userId    String
+    timesent  DateTime
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     upvotes   Upvotes[]
 }
