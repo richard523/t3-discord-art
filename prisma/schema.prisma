@@ -3,6 +3,7 @@
 
 generator client {
     provider = "prisma-client-js"
+    previewFeatures = ["views"]
 }
 
 datasource db {
@@ -82,3 +83,4 @@ model Upvotes {
     upvotes   Int
     generation Generation @relation(fields: [imgurlRef], references: [imgurl], onDelete: Cascade)
 }
+
