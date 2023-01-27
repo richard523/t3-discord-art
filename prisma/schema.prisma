@@ -27,7 +27,7 @@ model Account {
     userId            String
     type              String
     provider          String
-    providerAccountId String
+    providerAccountId String   @unique
     refresh_token     String? // @db.Text
     access_token      String? // @db.Text
     expires_at        Int?
@@ -36,7 +36,7 @@ model Account {
     id_token          String? // @db.Text
     session_state     String?
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+    generation        Generation[]
     @@unique([provider, providerAccountId])
 }
 
@@ -50,7 +50,7 @@ model Session {
 
 model User {
     id            String    @id @default(cuid())
-    name          String?
+    name          String?   @unique
     email         String?   @unique
     emailVerified DateTime?
     image         String?
@@ -69,18 +69,19 @@ model VerificationToken {
 
 model Generation {
     id        String   @id @default(cuid())
-    imgurl    String   @unique
+    imgurl    String   
     prompt    String
-    userId    String
+    name      String
     timesent  DateTime
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    providerAccountId String
+    user      User     @relation(fields: [name], references: [name], onDelete: Cascade)
+    account   Account  @relation(fields: [providerAccountId], references: [providerAccountId], onDelete: Cascade)
     upvotes   Upvotes[]
 }
 
 model Upvotes {
-    id        String   @id @default(cuid())
-    imgurlRef String
+    id              String   @id @default(cuid())
+    generationId    String
     upvotes   Int
-    generation Generation @relation(fields: [imgurlRef], references: [imgurl], onDelete: Cascade)
+    generation Generation @relation(fields: [generationId], references: [id], onDelete: Cascade)
 }
-
