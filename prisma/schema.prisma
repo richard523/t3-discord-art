@@ -68,20 +68,20 @@ model VerificationToken {
 }
 
 model Generation {
-    id        String   @id @default(cuid())
+    id        String            @id @default(cuid())
     imgurl    String   
     prompt    String
     name      String
-    timesent  DateTime
+    timesent  DateTime          @default(now()) @db.DateTime(6)
     providerAccountId String
-    user      User     @relation(fields: [name], references: [name], onDelete: Cascade)
-    account   Account  @relation(fields: [providerAccountId], references: [providerAccountId], onDelete: Cascade)
+    user      User              @relation(fields: [name], references: [name], onDelete: Cascade)
+    account   Account           @relation(fields: [providerAccountId], references: [providerAccountId], onDelete: Cascade)
     upvotes   Upvotes[]
 }
 
 model Upvotes {
     id              String   @id @default(cuid())
     generationId    String
-    upvotes   Int
+    upvotesNum   Int
     generation Generation @relation(fields: [generationId], references: [id], onDelete: Cascade)
 }

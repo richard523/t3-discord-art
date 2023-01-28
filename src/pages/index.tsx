@@ -50,12 +50,7 @@ const AuthShowcase: React.FC = () => {
 
   const { data: getAllGenerations } = api.example.getAllGenerations.useQuery(
     undefined, // no input
-    { enabled: sessionData?.user !== undefined },
-  );
-
-  const {data: getAllGenerationsTimeSents } = api.example.getAllGenerationsTimeSents.useQuery(
-    undefined, // no input
-    { enabled: sessionData?.user !== undefined },
+    { enabled: sessionData?.user?.name !== undefined },
   );
   
 
@@ -64,9 +59,6 @@ const AuthShowcase: React.FC = () => {
       <p className="text-center text-2xl text-white">
         {sessionData && <span>Logged in as {sessionData.user?.name} </span>}
         {secretMessage && <span> - {secretMessage}</span>}
-        {/* {JSON.stringify(getAllUsers) && <span> - {JSON.stringify(getAllUsers)}</span>} */}
-        {/* {JSON.stringify(getAllGenerations) && <span> - {JSON.stringify(getAllGenerations)}</span>} */}
-        
       </p>
       <button
         className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
@@ -74,11 +66,9 @@ const AuthShowcase: React.FC = () => {
       >
         {sessionData ? "Sign out" : "Sign in"}
       </button>
-      
-    
     <ul className="text-center text-2xl text-white">
       {   getAllGenerations && getAllGenerations.map((generation) => (
-          <li key={generation.imgurl}> <a href={`${generation.imgurl}`}>{}</a>
+          <li key={generation.imgurl}>
             <hr/>
             <br></br>
             <p className="text-center text-2xl text-white">{}</p>
@@ -86,15 +76,14 @@ const AuthShowcase: React.FC = () => {
             <h1 className="text-center text-2x1 font-bold text-white"> Art Title: {generation.prompt}</h1>
             <p className="text-center text-sm text-black">(Warning: Profanity filter is semi-functional)</p>
             <p className="text-center text-sm text-white">Above Art by: {generation.user.name}</p>
-            <p className="text-center text-sm text-white">Art ID: {generation.id}</p>
+            <p className="text-center text-sm text-white">Time Sent: {new Date(generation.timesent).toDateString()} </p>
             <br></br>
             <hr/>
           </li>
           ))}
           
     </ul>
-      
-      
-      </div>
+    {/* <p className="text-center text-sm text-white">{JSON.stringify(getAllGenerations)}</p> */}
+    </div>
   );
 };
