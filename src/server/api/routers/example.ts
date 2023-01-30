@@ -11,12 +11,23 @@ export const exampleRouter = createTRPCRouter({
       };
     }),
 
+
   getAllUsers: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.user.findMany();
   }),
 
+
+
   getAllGenerations: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.generation.findMany();
+    return ctx.prisma.generation.findMany({
+      include: {
+        user: true,
+        upvotes: true,
+      },
+      orderBy: {
+        timesent: "desc",
+      },
+    });
   }),
 
   getSecretMessage: protectedProcedure.query(() => {

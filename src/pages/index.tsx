@@ -5,7 +5,7 @@ import { getSession, signIn, signOut, useSession } from "next-auth/react";
 import { api } from "../utils/api";
 
 const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "Login using your discord. We store your email and you get funny images." });
+  const hello = api.example.hello.useQuery({ text: "still figuring out what trpc queries do..." });
   
   return (
     <>
@@ -19,14 +19,11 @@ const Home: NextPage = () => {
           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
             Discord Art Gallery <span className="text-[hsl(280,100%,70%)]">T3</span> App
           </h1>
-          
           <div className="flex flex-col items-center gap-2">
-            <p className="text-2xl text-white">
-              {hello.data ? hello.data.greeting : "Loading tRPC query..."}
-            </p>
             <AuthShowcase />
-            {/* <ShowPrompts /> */}
-            
+            <h1 className="text-4x2 text-black">
+              {hello.data ? hello.data.greeting : "Loading tRPC query..."}
+            </h1>
           </div>
         </div>
       </main>
@@ -53,48 +50,40 @@ const AuthShowcase: React.FC = () => {
 
   const { data: getAllGenerations } = api.example.getAllGenerations.useQuery(
     undefined, // no input
-    { enabled: sessionData?.user !== undefined },
+    { enabled: sessionData?.user?.name !== undefined },
   );
+  
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
       <p className="text-center text-2xl text-white">
         {sessionData && <span>Logged in as {sessionData.user?.name} </span>}
         {secretMessage && <span> - {secretMessage}</span>}
-        {/* {JSON.stringify(getAllUsers) && <span> - {JSON.stringify(getAllUsers)}</span>} */}
-        {/* {JSON.stringify(getAllGenerations) && <span> - {JSON.stringify(getAllGenerations)}</span>} */}
-        
       </p>
-
-      {/* <ul className="text-center text-2xl text-white">
-      {   getAllUsers && getAllUsers.map((user) => (
-          <li key={user.id}>{user.name}</li>
-    ))}
-      </ul>
-      <ul className="text-center text-2xl text-white">
-      {   getAllGenerations && getAllGenerations.map((generation) => (
-          <li key={generation.id}>{generation.prompt}</li>
-    ))}
-      </ul> */}
-
-      <ul className="text-center text-2xl text-white">
-      {   getAllGenerations && getAllGenerations.map((generation) => (
-          <li key={generation.id}> <a href={`${generation.imgurl}`}>{}</a>
-            <p>{generation.prompt}</p>
-            <img src={`${generation.imgurl}`} alt="new" className="flex items-center justify-center gap-4"/>
-          </li>
-          
-    ))}
-      </ul>
-
-      
-
       <button
         className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
         onClick={sessionData ? () => void signOut() : () => void signIn()}
       >
         {sessionData ? "Sign out" : "Sign in"}
       </button>
+    <ul className="text-center text-2xl text-white">
+      {   getAllGenerations && getAllGenerations.map((generation) => (
+          <li key={generation.imgurl}>
+            <hr/>
+            <br></br>
+            <p className="text-center text-2xl text-white">{}</p>
+            <img src={`${generation.imgurl}`} alt="new" className="md:inline-flex items-center justify-center"/>
+            <h1 className="text-center text-2x1 font-bold text-white"> Art Title: {generation.prompt}</h1>
+            <p className="text-center text-sm text-black">(Warning: Profanity filter is semi-functional)</p>
+            <p className="text-center text-sm text-white">Above Art by: {generation.user.name}</p>
+            <p className="text-center text-sm text-white">Time Sent: {new Date(generation.timesent).toDateString()} </p>
+            <br></br>
+            <hr/>
+          </li>
+          ))}
+          
+    </ul>
+    {/* <p className="text-center text-sm text-white">{JSON.stringify(getAllGenerations)}</p> */}
     </div>
   );
 };
